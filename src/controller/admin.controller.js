@@ -28,8 +28,7 @@ const login = async (req, res) => {
       req.body.email,
       req.body.password
     );
-    const { token, expirationDate } = await user.generateAuthToken();
-    const expiresIn = Math.floor(expirationDate.getTime() / 1000);
+    const { token, expiresIn } = await user.generateAuthToken();
 
     res.status(200).send({ user, token, expiresIn });
   } catch (e) {
@@ -50,11 +49,38 @@ const deleteUser = async (req, res) => {
     res.status(404).send(e);
   }
 };
+
+//router.post("/users/logout", auth, async (req, res)
+const userLogout = async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((token) => {
+      return token.token !== req.token;
+    });
+    await req.user.save();
+
+    res.send("successfuly logout!");
+  } catch (e) {
+    res.status(500).send();
+  }
+};
+//router.post("/users/logoutAll", auth, async (req, res)
+const userLogoutAll = async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+    res.send();
+  } catch (e) {
+    res.status(500).send(e);
+  }
+};
+
 module.exports = {
   login,
   signup,
   UserList_get,
   deleteUser,
+  userLogout,
+  userLogoutAll,
 };
 
 //-----------------------Timer to remove JWT Token after expiration--------------------------------------------

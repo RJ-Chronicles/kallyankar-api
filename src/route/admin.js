@@ -5,6 +5,8 @@ const {
   signup,
   UserList_get,
   deleteUser,
+  userLogout,
+  userLogoutAll,
 } = require("../controller/admin.controller");
 const router = new express.Router();
 
@@ -16,9 +18,9 @@ router.get("/user_list", auth, UserList_get);
 
 router.delete("/delete/:id", auth, deleteUser);
 
-// router.post("/logout", userLogout);
+router.post("/logout", userLogout);
 
-// router.post("/logout/all", userLogout);
+router.post("/logout/all", userLogoutAll);
 
 //router.patch("/update/:id", auth, updateUser);
 

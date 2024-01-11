@@ -3,9 +3,15 @@ const Admin = require("../models/admin");
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.header("Authorization").replace("Bearer ", "");
+    const token = req.header("Authorization"); //?.replace("Bearer ", "")
+    console.log("-------------------------------");
 
-    const decoded = jwt.verify(token, "thisismynewcourseformycourse");
+    if (!token) {
+      console.log("Token missing");
+      throw new Error("Authentication failed: Token missing");
+    }
+    console.log(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await Admin.findOne({
       _id: decoded._id,
       "tokens.token": token,

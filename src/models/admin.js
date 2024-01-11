@@ -83,11 +83,11 @@ adminSchema.methods.generateAuthToken = async function () {
   expirationDate.setTime(
     expirationDate.getTime() + expiresInHours * 60 * 60 * 1000
   );
-
+  const expiresIn = Math.floor(expirationDate.getTime() / 1000);
   const token = jwt.sign(
     {
       _id: user._id.toString(),
-      exp: Math.floor(expirationDate.getTime() / 1000), // Add expiration time to payload
+      exp: expiresIn, // Add expiration time to payload
     },
     process.env.JWT_SECRET
   );
@@ -95,7 +95,7 @@ adminSchema.methods.generateAuthToken = async function () {
   user.tokens = user.tokens.concat({ token });
   await user.save();
 
-  return { token, expirationDate };
+  return { token, expiresIn };
 };
 adminSchema.statics.findByEmailId = async (email) => {
   console.log(email);
